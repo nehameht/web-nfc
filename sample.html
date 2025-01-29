@@ -46,7 +46,8 @@ This is an experimental page only. Enter the Webex calling activation code in th
     <input type="text" id="activationCode" name="activationCode"><br><br>
 
 <button id="scanButton">Scan</button>
-<button id="writeButton">Activate</button>
+<button id="writeButton">Write</button>
+<button id="activateButton">Activate</button>
 <!-- <button id="makeReadOnlyButton">Make Read-Only</button> -->
 
 <script>
@@ -145,6 +146,37 @@ writeButton.addEventListener("click", async () => {
   } catch (error) {
     log("Argh! " + error);
   }
+});
+
+activateButton.addEventListener("click", async () => {
+  log("User clicked Activate button");
+
+  try {
+    const ndef = new NDEFReader();
+    await ndef.scan();
+    log("> Scan started");
+
+    ndef.addEventListener("readingerror", () => {
+      log("Argh! Cannot read data from the NFC tag. Try another one?");
+    });
+
+    ndef.addEventListener("reading", ({ message, serialNumber }) => {
+      log(`> Serial Number: ${serialNumber}`);
+      log(`> Records: (${message.records.length})`);
+      // Get the activation code from the input field
+    var activationCode = document.getElementById("activationCode").value;
+
+    // Display "Activation in progress ..." message
+    log("Activation in progress...");
+
+    ndef.write("onboardingMethod:3\nonboardingDetail:" + activationCode);
+    log("> Activation code written:" + activationCode);
+
+    });
+  } catch (error) {
+    log("Argh! " + error);
+  }
+
 });
 
 /*
