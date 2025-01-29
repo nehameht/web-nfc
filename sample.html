@@ -19,16 +19,6 @@
       });
     </script>
 
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
-    <style>
-        #reader {
-            width: 300px;
-            height: 300px;
-            margin-top: 20px;
-            display: none; /* Initially hidden */
-        }
-    </style>
-    
     
     <link rel="icon" href="https://googlechrome.github.io/samples/images/favicon.ico">
     
@@ -45,7 +35,10 @@
     </p>
     <h3>How to use</h3>
 <p>
-This is an experimental page only. Enter the Webex calling activation code in the text box and click on "Activate" button.
+This is an experimental page only. Please read and follow the steps in the order listed below: 
+1. Enter the Webex calling activation code in the text box
+2. Click on "Activate" button.
+3. Tap and hold your mobile phone on 9800 desk phone NFC tag icon.
 </p>
 
 <h2>Activate the phone via Webex Calling activation code</h2>
@@ -53,66 +46,7 @@ This is an experimental page only. Enter the Webex calling activation code in th
 <label for="activationCode">Enter activation code:</label><br>
 <input type="text" id="activationCode" name="activationCode"><br><br>
 
-<h2>Or scan QR code</h2>
-    <button id="scanQrButton">Scan QR Code</button>
-    <div id="reader"></div>
-
-    <script>
-        try {
-          // Initialize the QR code reader
-          const html5QrCode = new Html5Qrcode("reader");
-        } catch (error) {
-            log("Argh! " + error);
-        }
-        
-        // Function to start scanning
-        function startScanning() {
-            document.getElementById("reader").style.display = "block"; // Show the reader
-            html5QrCode.start(
-                { facingMode: "environment" }, // Use back camera
-                {
-                    fps: 10,    // Optional, frame per seconds for qr code scanning
-                    qrbox: 250  // Optional, if you want bounded box UI
-                },
-                qrCodeMessage => {
-                    // Set the scanned QR code message to the activationCode input
-                    document.getElementById("activationCode").value = qrCodeMessage;
-                    // Stop the scanning after successful scan
-                    html5QrCode.stop();
-                    document.getElementById("reader").style.display = "none"; // Hide the reader
-                },
-                errorMessage => {
-                    // Optional, handle scan error (e.g., no QR code found)
-                    console.warn(`QR Code no longer in front of camera. Error = ${errorMessage}`);
-                }
-            ).catch(err => {
-                log("Unable to start scanning, error: " + err);
-                console.error(`Unable to start scanning, error: ${err}`);
-            });
-        }
-
-        try {
-          // Event listener for the scan QR code button
-          document.getElementById("scanQrButton").addEventListener("click", startScanning);
-        } catch (error) {
-            log("Argh! " + error);
-        }        
-
-        /*
-        // Event listener for the activate button
-        document.getElementById("activateButton").addEventListener("click", () => {
-            const activationCode = document.getElementById("activationCode").value;
-            // Handle the activation logic here
-            alert(`Activation Code: ${activationCode}`);
-        });
-        */
-    </script>
-
-
-<button id="scanButton">Scan</button>
-<button id="writeButton">Write</button>
 <button id="activateButton">Activate</button>
-<!-- <button id="makeReadOnlyButton">Make Read-Only</button> -->
 
 <script>
   var ChromeSamples = {
@@ -172,45 +106,7 @@ if (!("NDEFReader" in window))
 
   
     
-      <script>scanButton.addEventListener("click", async () => {
-  log("User clicked scan button");
-
-  try {
-    const ndef = new NDEFReader();
-    await ndef.scan();
-    log("> Scan started");
-
-    ndef.addEventListener("readingerror", () => {
-      log("Argh! Cannot read data from the NFC tag. Try another one?");
-    });
-
-    ndef.addEventListener("reading", ({ message, serialNumber }) => {
-      log(`> Serial Number: ${serialNumber}`);
-      log(`> Records: (${message.records.length})`);
-    });
-  } catch (error) {
-    log("Argh! " + error);
-  }
-});
-
-writeButton.addEventListener("click", async () => {
-  log("User clicked write button");
-
-  // Get the activation code from the input field
-  var activationCode = document.getElementById("activationCode").value;
-
-  // Display "Activation in progress ..." message
-  log("Activation in progress...");
-  //document.getElementById("status").innerHTML = "Activation in progress...";
-
-  try {
-    const ndef = new NDEFReader();
-    await ndef.write("onboardingMethod:3\nonboardingDetail:" + activationCode);
-    log("> Activation code written:" + activationCode);
-  } catch (error) {
-    log("Argh! " + error);
-  }
-});
+      <script>
 
 activateButton.addEventListener("click", async () => {
   log("User clicked Activate button");
@@ -243,19 +139,6 @@ activateButton.addEventListener("click", async () => {
 
 });
 
-/*
-makeReadOnlyButton.addEventListener("click", async () => {
-  log("User clicked make read-only button");
-
-  try {
-    const ndef = new NDEFReader();
-    await ndef.makeReadOnly();
-    log("> NFC tag has been made permanently read-only");
-  } catch (error) {
-    log("Argh! " + error);
-  }
-});
-*/
 </script>
     
   
