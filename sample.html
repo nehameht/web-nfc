@@ -19,6 +19,15 @@
       });
     </script>
 
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        #reader {
+            width: 300px;
+            height: 300px;
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+    </style>
     
     <link rel="icon" href="https://googlechrome.github.io/samples/images/favicon.ico">
     
@@ -46,6 +55,66 @@ This is an experimental page only. Please read and follow the steps in the order
 <label for="activationCode">Enter activation code:</label><br>
 <input type="text" id="activationCode" name="activationCode"><br><br>
 
+<h2>Or scan QR code</h2>
+    <button id="scanQrButton">Scan QR Code</button>
+    <div id="reader"></div>
+
+    <script>
+        try {
+          // Initialize the QR code reader
+          log("About to Initialize the QR code reader ...");
+          const html5QrCode = new Html5Qrcode("reader");
+        } catch (error) {
+            log("Argh! " + error);
+        }
+        
+        // Function to start scanning
+        function startScanning() {
+            log("startScanning enter ...");
+            document.getElementById("reader").style.display = "block"; // Show the reader
+            log("About to start QR code scan ...");
+            html5QrCode.start(
+                { facingMode: "environment" }, // Use back camera
+                {
+                    fps: 10,    // Optional, frame per seconds for qr code scanning
+                    qrbox: 250  // Optional, if you want bounded box UI
+                },
+                qrCodeMessage => {
+                    log("Got QR code message: " + qrCodeMessage);
+                    // Set the scanned QR code message to the activationCode input
+                    document.getElementById("activationCode").value = qrCodeMessage;
+                    // Stop the scanning after successful scan
+                    html5QrCode.stop();
+                    document.getElementById("reader").style.display = "none"; // Hide the reader
+                },
+                errorMessage => {
+                    // Optional, handle scan error (e.g., no QR code found)
+                    log("QR Code no longer in front of camera. Error = " + errorMessage);
+                    console.warn(`QR Code no longer in front of camera. Error = ${errorMessage}`);
+                }
+            ).catch(err => {
+                log("Unable to start scanning, error: " + err);
+                console.error(`Unable to start scanning, error: ${err}`);
+            });
+        }
+
+        try {
+          // Event listener for the scan QR code button
+          document.getElementById("scanQrButton").addEventListener("click", startScanning);
+        } catch (error) {
+            log("Argh! " + error);
+        }        
+
+        /*
+        // Event listener for the activate button
+        document.getElementById("activateButton").addEventListener("click", () => {
+            const activationCode = document.getElementById("activationCode").value;
+            // Handle the activation logic here
+            alert(`Activation Code: ${activationCode}`);
+        });
+        */
+    </script>
+<br>
 <button id="activateButton">Activate</button>
 
 <script>
