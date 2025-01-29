@@ -31,7 +31,7 @@
 
   <body>
     
-    <h1>Cisco Desk Phone Web NFC Sample</h1>
+    <h1>Cisco Desk Phone 9800 series: Web NFC Sample</h1>
     <p class="availability">
       Available in <a target="_blank" href="https://www.chromestatus.com/feature/6261030015467520">Android Chrome 89+ only</a>
     </p>
@@ -39,6 +39,11 @@
 <p>
 This is an experimental page only. Enter the Webex calling activation code in the text box and click on "Activate" button.
 </p>
+
+<h2>Activate the phone via Webex Calling activation code</h2>
+
+    <label for="activationCode">Enter activation code:</label><br>
+    <input type="text" id="activationCode" name="activationCode"><br><br>
 
 <button id="scanButton">Scan</button>
 <button id="writeButton">Activate</button>
@@ -126,10 +131,17 @@ if (!("NDEFReader" in window))
 writeButton.addEventListener("click", async () => {
   log("User clicked write button");
 
+  // Get the activation code from the input field
+  var activationCode = document.getElementById("activationCode").value;
+
+  // Display "Activation in progress ..." message
+  log("Activation in progress...");
+  //document.getElementById("status").innerHTML = "Activation in progress...";
+
   try {
     const ndef = new NDEFReader();
-    await ndef.write("onboardingMethod:3\nonboardingDetail:223456781234");
-    log("> Dummy activation code written");
+    await ndef.write("onboardingMethod:3\nonboardingDetail:" + activationCode);
+    log("> Activation code written:" + activationCode);
   } catch (error) {
     log("Argh! " + error);
   }
