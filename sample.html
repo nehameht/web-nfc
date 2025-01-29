@@ -134,7 +134,7 @@ writeButton.addEventListener("click", async () => {
 
   try {
     const ndef = new NDEFReader();
-    await ndef.write("onboardingMethod:7\nonboardingDetail:123456781234");
+    await ndef.write("onboardingMethod:3\nonboardingDetail:123456781234");
     log("> Message written");
   } catch (error) {
     log("Argh! " + error);
