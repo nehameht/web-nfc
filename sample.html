@@ -58,9 +58,13 @@ This is an experimental page only. Enter the Webex calling activation code in th
     <div id="reader"></div>
 
     <script>
-        // Initialize the QR code reader
-        const html5QrCode = new Html5Qrcode("reader");
-
+        try {
+          // Initialize the QR code reader
+          const html5QrCode = new Html5Qrcode("reader");
+        } catch (error) {
+            log("Argh! " + error);
+        }
+        
         // Function to start scanning
         function startScanning() {
             document.getElementById("reader").style.display = "block"; // Show the reader
@@ -82,12 +86,17 @@ This is an experimental page only. Enter the Webex calling activation code in th
                     console.warn(`QR Code no longer in front of camera. Error = ${errorMessage}`);
                 }
             ).catch(err => {
+                log("Unable to start scanning, error: " + err);
                 console.error(`Unable to start scanning, error: ${err}`);
             });
         }
 
-        // Event listener for the scan QR code button
-        document.getElementById("scanQrButton").addEventListener("click", startScanning);
+        try {
+          // Event listener for the scan QR code button
+          document.getElementById("scanQrButton").addEventListener("click", startScanning);
+        } catch (error) {
+            log("Argh! " + error);
+        }        
 
         /*
         // Event listener for the activate button
