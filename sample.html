@@ -48,7 +48,7 @@ Card Emulation (HCE) are not supported within the current scope.
 
 <button id="scanButton">Scan</button>
 <button id="writeButton">Write</button>
-<button id="makeReadOnlyButton">Make Read-Only</button>
+<!-- <button id="makeReadOnlyButton">Make Read-Only</button> -->
 
 <script>
   var ChromeSamples = {
@@ -81,7 +81,7 @@ Card Emulation (HCE) are not supported within the current scope.
 <h3>Live Output</h3>
 <div id="output" class="output">
   <div id="content"></div>
-  <div id="status">Web NFC is not available. Use Chrome on Android.</div>
+  <div id="status"></div>
   <pre id="log"></pre>
 </div>
 
@@ -134,7 +134,7 @@ writeButton.addEventListener("click", async () => {
 
   try {
     const ndef = new NDEFReader();
-    await ndef.write("Hello world!");
+    await ndef.write("onboardingMethod:7\nonboardingDetail:123456781234");
     log("> Message written");
   } catch (error) {
     log("Argh! " + error);
