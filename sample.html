@@ -47,6 +47,7 @@ This is an experimental page only. Please read and follow the steps in the order
 <input type="text" id="activationCode" name="activationCode"><br><br>
 
 <button id="activateButton">Activate</button>
+<button id="activateButtonEnc">Activate Encrypted</button>
 
 <script>
   var ChromeSamples = {
@@ -131,6 +132,51 @@ activateButton.addEventListener("click", async () => {
 
     ndef.write("onboardingMethod:3\nonboardingDetail:" + activationCode);
     log("> Activation code written:" + activationCode);
+
+    });
+  } catch (error) {
+    log("Argh! " + error);
+  }
+
+});
+
+activateButtonEnc.addEventListener("click", async () => {
+  log("User clicked Activate Encrypted button");
+
+  try {
+    const ndef = new NDEFReader();
+    await ndef.scan();
+    log("> Scan started");
+
+    ndef.addEventListener("readingerror", () => {
+      log("Argh! Cannot read data from the NFC tag. Try another one?");
+    });
+
+    ndef.addEventListener("reading", ({ message, serialNumber }) => {
+      log(`> Serial Number: ${serialNumber}`);
+      log(`> Records: (${message.records.length})`);
+      // Get the activation code from the input field
+    //var activationCode = document.getElementById("activationCode").value;
+
+    // Display "Activation in progress ..." message
+    log("Activation in progress...");
+
+    //ndef.write("onboardingMethod:3\nonboardingDetail:" + activationCode);
+
+    // Define the binary data to write
+    const binaryData = new Uint8Array([0x01, 0x02, 0x03, 0x04]); // Example binary data
+
+    // Write the data with the specified MIME type
+    ndef.write({
+        records: [{
+            recordType: "mime",
+            mediaType: "application/x-phoneos-encrypt",
+            data: binaryData
+        }]
+    });
+
+    log("> Data successfully written to NFC tag.");
+    //log("> Activation code written:" + activationCode);
 
     });
   } catch (error) {
