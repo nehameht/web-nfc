@@ -180,7 +180,7 @@ activateButtonEnc.addEventListener("click", async () => {
     ndef.write({
         records: [{
             recordType: "mime",
-            mediaType: "application/x-phoneos-encrypt",
+            mediaType: "application/x-phoneos-sign",
             data: signedData
         }]
     });
