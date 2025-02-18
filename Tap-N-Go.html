@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Writer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { padding: 20px; }
+        .activation-code { font-size: 18px; margin-bottom: 20px; }
+        .instructions { font-size: 16px; color: gray; margin-bottom: 20px; display: none; }
+        .button { padding: 10px 20px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="activationCode" class="activation-code"></div>
+        <div id="instructions" class="instructions">Tap your phone to the NFC tag</div>
+        <button id="tapNGoButton" class="button">Tap N Go</button>
+    </div>
+    <script>
+        // Function to extract the actCode from the URL query parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Function to write to NFC
+        async function writeToNFC(content) {
+            try {
+                const ndef = new NDEFReader();
+                await ndef.write(content);
+                alert('NFC tag written successfully!');
+            } catch (error) {
+                console.error('Error writing to NFC tag:', error);
+            }
+        }
+
+        // Initialize page content and event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const actCode = getQueryParam('actCode');
+            if (actCode && /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/.test(actCode)) {
+                const cleanActCode = actCode.replace(/-/g, ''); // Remove dashes
+                const nfcContent = `onboardingMethod:3\nonboardingDetail:${cleanActCode}`;
+                document.getElementById('activationCode').textContent = 'Activation Code: ' + actCode;
+
+                // Add event listener to the button
+                document.getElementById('tapNGoButton').addEventListener('click', () => {
+                    document.getElementById('instructions').style.display = 'block';
+                    writeToNFC(nfcContent);
+                });
+            } else {
+                alert('Invalid or missing activation code.');
+            }
+        });
+    </script>
+</body>
+</html>
